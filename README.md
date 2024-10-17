@@ -9,9 +9,26 @@
 docker build -t opengauss:6.0.0-openEuler .
 ```
 
-运行镜像
+运行容器（未持久化）
 ```
 docker run -d -p 5432:5432 --name opengauss-container opengauss:6.0.0-openEuler
+```
+
+运行容器（有持久化）
+本指令为了设置权限初始化似乎比较麻烦，有优化方法可以pr~
+`/www/wwwroot/opengauss/data`改为你实际想设置的存储路径
+```
+docker run -d --name temp-opengauss opengauss:6.0.0-openEuler
+docker cp temp-opengauss:/opt/openGauss/data /www/wwwroot/opengauss/data
+docker stop temp-opengauss
+docker rm temp-opengauss
+sudo chmod -R 700 /www/wwwroot/opengauss/data
+sudo chown -R 1000:1000 /www/wwwroot/opengauss/data
+docker run -d \
+    -p 5432:5432 \
+    --name opengauss-container \
+    -v /www/wwwroot/opengauss/data:/opt/openGauss/data \
+    opengauss:6.0.0-openEuler
 ```
 
 主机链接
