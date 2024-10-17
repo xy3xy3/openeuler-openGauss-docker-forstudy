@@ -13,3 +13,14 @@ docker build -t opengauss:6.0.0-openEuler .
 ```
 docker run -d -p 5432:5432 --name opengauss-container opengauss:6.0.0-openEuler
 ```
+
+主机链接
+先安装链接客户端
+```
+sudo apt install postgresql-client
+```
+
+测试链接
+```
+psql -h 127.0.0.1 -d postgres -p 5432 -U superuser
+```
