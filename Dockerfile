@@ -1,5 +1,12 @@
 # 使用 openEuler 22.03 作为基础镜像
 FROM openeuler/openeuler:22.03
+
+# 设置必要的环境变量
+ENV GAUSSHOME=/opt/openGauss
+ENV GAUSSDATA=/opt/openGauss/data
+ENV PATH=$GAUSSHOME/install/bin:$PATH
+ENV LD_LIBRARY_PATH=/opt/openGauss/install/lib:/usr/lib:/usr/lib64
+
 # 重命名 openEuler.repo 为 openEuler.repo.bak
 RUN mv /etc/yum.repos.d/openEuler.repo /etc/yum.repos.d/openEuler.repo.bak
 
@@ -18,14 +25,6 @@ RUN yum makecache && \
     sudo \
     cjson \
     libcgroup
-
-# 设置必要的环境变量
-ENV GAUSSHOME=/opt/openGauss
-ENV GAUSSDATA=/opt/openGauss/data
-ENV PATH=$GAUSSHOME/install/bin:$PATH
-ENV LD_LIBRARY_PATH=/opt/openGauss/install/lib:/usr/lib:/usr/lib64
-ENV GAUSS_SUPERUSER_PASSWORD=OGSql@123
-
 
 # 创建安装目录
 RUN mkdir -p /opt/openGauss
@@ -49,7 +48,7 @@ RUN tar -zxf /opt/openGauss/openGauss-Lite-6.0.0-openEuler22.03-x86_64.tar.gz -C
 
 # 切换为非 root 用户并安装 openGauss
 USER gauss
-RUN echo $GAUSS_SUPERUSER_PASSWORD | sh /opt/openGauss/install.sh --mode single -D /opt/openGauss/data -R /opt/openGauss/install --start
+RUN echo "OGSql@123" | sh /opt/openGauss/install.sh --mode single -D /opt/openGauss/data -R /opt/openGauss/install --start
 
 # 修改 postgresql.conf 文件，允许监听所有 IP 地址，并设置密码加密类型为 md5
 RUN sed -i "s/#listen_addresses = 'localhost'/listen_addresses = '*'/" /opt/openGauss/data/postgresql.conf && \
@@ -67,7 +66,7 @@ RUN echo "/opt/openGauss/install/lib" >> /etc/ld.so.conf.d/opengauss.conf && \
 USER gauss
 RUN /opt/openGauss/install/bin/gaussdb -D /opt/openGauss/data & \
     sleep 10 && \
-    gsql -d postgres -c "CREATE USER superuser WITH PASSWORD '$GAUSS_SUPERUSER_PASSWORD';" && \
+    gsql -d postgres -c "CREATE USER superuser WITH PASSWORD 'OGSql@123';" && \
     gsql -d postgres -c "ALTER USER superuser WITH SUPERUSER CREATEROLE CREATEDB;" && \
     gsql -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE postgres TO superuser;"
 
