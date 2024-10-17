@@ -31,6 +31,33 @@ docker run -d \
     opengauss:6.0.0-openEuler
 ```
 
+docker仓库地址：https://hub.docker.com/repository/docker/xy3666/opengauss/general
+
+如果你不想自己构建
+```
+docker pull xy3666/opengauss:6.0.0-openEuler
+```
+
+之后对上面的指令替换docker名字即可
+
+```
+docker run -d -p 5432:5432 --name opengauss-container xy3666/opengauss:6.0.0-openEuler
+```
+
+```
+docker run -d --name temp-opengauss xy3666/opengauss:6.0.0-openEuler
+docker cp temp-opengauss:/opt/openGauss/data /www/wwwroot/opengauss/data
+docker stop temp-opengauss
+docker rm temp-opengauss
+sudo chmod -R 700 /www/wwwroot/opengauss/data
+sudo chown -R 1000:1000 /www/wwwroot/opengauss/data
+docker run -d \
+    -p 5432:5432 \
+    --name opengauss-container \
+    -v /www/wwwroot/opengauss/data:/opt/openGauss/data \
+    xy3666/opengauss:6.0.0-openEuler
+```
+
 主机链接
 先安装链接客户端
 ```
