@@ -62,14 +62,16 @@ RUN echo "host    all             all             0.0.0.0/0               md5" >
 USER root
 RUN echo "/opt/openGauss/install/lib" >> /etc/ld.so.conf.d/opengauss.conf && \
     ldconfig
-    
+
 # 初始化数据库并创建超级用户
 USER gauss
 RUN /opt/openGauss/install/bin/gaussdb -D /opt/openGauss/data & \
     sleep 10 && \
     gsql -d postgres -c "CREATE USER superuser WITH PASSWORD '$GAUSS_SUPERUSER_PASSWORD';" && \
     gsql -d postgres -c "ALTER USER superuser WITH SUPERUSER CREATEROLE CREATEDB;" && \
-    gsql -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE postgres TO superuser;"
+    gsql -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE postgres TO superuser;" && \
+    gsql -d postgres -c "GRANT USAGE ON SCHEMA public TO superuser;" && \
+    gsql -d postgres -c "GRANT CREATE ON SCHEMA public TO superuser;"
 
 # 暴露默认的数据库端口
 EXPOSE 5432
