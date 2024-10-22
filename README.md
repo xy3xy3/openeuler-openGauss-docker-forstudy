@@ -49,6 +49,8 @@ docker run -d -p 5432:5432 --name opengauss-container xy3666/opengauss:latest
 docker run -d -p 5432:5432 --name opengauss-container -e GAUSS_SUPERUSER_PASSWORD=NewPassword@123 xy3666/opengauss:latest
 ```
 
+带挂载目录版指令
+
 ```
 docker run -d --name temp-opengauss xy3666/opengauss:latest
 docker cp temp-opengauss:/opt/openGauss/data /www/wwwroot/opengauss/data
