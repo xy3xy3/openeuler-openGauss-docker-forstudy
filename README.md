@@ -4,6 +4,12 @@
 
 默认可外部链接的账号`superuser`,默认密码`OGSql@123`,默认密码可以构建镜像前搜索`OGSql@123`修改
 
+官方下载链接：https://opengauss.org/zh/download/
+
+# 轻量版
+
+在`openGauss-Lite-6.0.0-openEuler22.03-x86_64`文件夹
+
 构建镜像
 ```
 docker build -t opengauss:6.0.0-openEuler .
@@ -75,3 +81,6 @@ sudo apt install postgresql-client
 ```
 psql -h 127.0.0.1 -d postgres -p 5432 -U superuser
 ```
+
+# 企业版
+
